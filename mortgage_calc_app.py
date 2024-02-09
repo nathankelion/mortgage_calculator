@@ -54,7 +54,7 @@ elif calculator_type == 'Affordability calculator':
     deposit = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d")
 
 # Mortgage term
-mortgage_term = col1.slider("Mortgage term (years)", min_value=5, max_value=25, value=20, step=1)
+mortgage_term = col1.slider("Mortgage term (years)", min_value=5, max_value=30, value=20, step=1)
 
 # Advanced options (i spread)
 advanced_options = col1.toggle("Advanced options")
