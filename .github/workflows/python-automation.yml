@@ -1,0 +1,27 @@
+name: Update Data
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your default branch
+  schedule:
+    - cron: '*/15 * * * *'  # Run every 15 minutes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.2  # Adjust as needed
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        run: python scripts/update_data.py
