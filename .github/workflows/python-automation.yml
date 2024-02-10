@@ -24,3 +24,9 @@ jobs:
 
       - name: Run Python script
         run: python scripts/update_data.py
+        
+      - name: Commit and push changes
+        run:
+          git add .
+          git commit -m "Update data"
+          git push
