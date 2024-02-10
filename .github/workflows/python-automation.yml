@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main  # Adjust this to your default branch
-  schedule:
-    - cron: 
+
 
 jobs:
   build:
