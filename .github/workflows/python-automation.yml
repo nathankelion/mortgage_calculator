@@ -24,11 +24,19 @@ jobs:
       - name: Run Python script
         run: python scripts/update_data.py
         
+      - name: Set Git user email and name
+        run: |
+          git config --global user.email "actions@example.com"
+          git config --global user.name "GitHub Actions"
+        
       - name: Stage changes
         run: git add .
         
       - name: Commit changes
-        run: git commit -m "Update data"
+        run: |
+          git commit -m "Update data" || echo "No changes to commit"
         
       - name: Push changes
-        run: git push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
