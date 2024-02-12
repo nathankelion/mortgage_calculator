@@ -19,7 +19,7 @@ if 'GITHUB_ACTIONS' in os.environ:
     # Running in GitHub Actions
     print("Running in GitHub Actions. Using default download folder.")
     # Specify the path to ChromeDriver
-    chrome_driver_path = '/usr/local/bin/chromedriver'
+    chrome_driver_path = '/usr/local/bin'
     # Initialize ChromeDriver with the specified path
     driver = webdriver.Chrome(chrome_driver_path)
 else:
