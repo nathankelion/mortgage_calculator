@@ -21,7 +21,7 @@ if 'GITHUB_ACTIONS' in os.environ:
     # Set Chrome executable path obtained from the workflow
     chrome_executable_path = os.getenv('CHROME_PATH')
     # Initialize ChromeDriver with the specified path
-    driver = webdriver.Chrome(executable_path=chrome_executable_path)
+    driver = webdriver.Chrome(path=chrome_executable_path)
 else:
     # Running locally
     download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
