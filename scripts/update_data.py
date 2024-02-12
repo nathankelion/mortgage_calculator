@@ -32,7 +32,7 @@ else:
         'safebrowsing.enabled': True
     })
     # Initialize ChromeDriver
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options, options=chrome_options)
 
 # Navigate to the zip file link
 driver.get(zip_url)
