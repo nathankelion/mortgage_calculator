@@ -1,4 +1,5 @@
 import streamlit as st
+import base64
 from scipy.optimize import root_scalar
 
 from scripts.boe_dataframe import create_spot_curve
@@ -21,7 +22,7 @@ col1.title('Mortgage Calculator')
 yield_date = create_spot_curve()[0]
 
 # Brief explanation
-st.write(f'Bank of England spot rates as at <i>{yield_date.strftime("%d/%m/%Y")}</i>', unsafe_allow_html=True)
+st.write(f'Bank of England spot rates as at *{yield_date.strftime("%d/%m/%Y")}*')
 
 st.divider()
 
@@ -160,6 +161,55 @@ if calculate_clicked:
                 )
             )
 
+    # Read the image file and encode it
+    with open("data/mortgage_info_website.png", "rb") as img_file:
+        img_data = base64.b64encode(img_file.read()).decode()
+
+    # Define the website URL
+    website_url = "https://www.moneysavingexpert.com/mortgages/best-mortgages-cashback/"
+
+    # Define HTML and CSS for the tooltip
+    html_content = f"""
+    <style>
+    .tooltip {{
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    }}
+
+    .tooltip .tooltiptext {{
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    }}
+
+    .tooltip:hover .tooltiptext {{
+    visibility: visible;
+    opacity: 1;
+    }}
+    </style>
+
+    <div class="tooltip">
+    <a href="{website_url}" target="_blank">
+        <img src="data:image/png;base64,{img_data}" alt="Mortgage Info" style="width:100%">
+    </a>
+    <span class="tooltiptext">Click on the image to get started!</span>
+    </div>
+    """
+
+    # Display HTML in Streamlit
+    col3.markdown(html_content, unsafe_allow_html=True)
 
 
 # Add a line with your information, using CSS to position it at the bottom
