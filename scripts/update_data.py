@@ -19,11 +19,10 @@ chrome_options = Options()
 if 'GITHUB_ACTIONS' in os.environ:
     # Running in GitHub Actions
     print("Running in GitHub Actions. Using default download folder.")
-    chrome_service = Service(os.environ['CHROMEWEBDRIVER'])
-    for option in ['--headless','--disable-gpu','--window-size=1920,1200','--ignore-certificate-errors','--disable-extensions','--no-sandbox','--disable-dev-shm-usage']:
-        chrome_options.add_argument(option)
+    # Specify the path to ChromeDriver
+    chrome_driver_path = '/usr/local/bin/chromedriver'
     # Initialize ChromeDriver with the specified path
-    driver = webdriver.Chrome(service = chrome_service,options = chrome_options)
+    driver = webdriver.Chrome(chrome_driver_path, options = chrome_options)
 else:
     # Running locally
     download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
