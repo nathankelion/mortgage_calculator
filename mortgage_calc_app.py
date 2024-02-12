@@ -1,6 +1,7 @@
 import streamlit as st
 from scipy.optimize import root_scalar
 
+from scripts.boe_dataframe import create_spot_curve
 from scripts.i_v_calc import calc_i_v
 
 # Set page configuration to wide mode
@@ -16,8 +17,11 @@ col2.image('data\house.webp')
 # Display title
 col1.title('Mortgage Calculator')
 
+# Get the date of the latest yields
+yield_date = create_spot_curve()[0]
+
 # Brief explanation
-st.write('Text here...')
+st.write(f'Bank of England spot rates as at <i>{yield_date.strftime("%d/%m/%Y")}</i>', unsafe_allow_html=True)
 
 st.divider()
 
@@ -25,7 +29,7 @@ st.divider()
 col1, col2, col3, col4 = st.columns([4,2,4,2])
 
 # Determine whether Monthly Mortgage Calculator or Affordability Calculator
-calculator_type = col1.selectbox("Select calculator",["Monthly mortgage calculator", "Affordability calculator"])
+calculator_type = col1.selectbox("Select calculator",["Monthly mortgage calculator", "Affordability calculator"], help="Choose between calculators:\n\n\'Monthly mortgage calculator' works out monthly repayments based on borrowing.\n\n'Affordablity calculator' works out  theoretical maximum houseprice based on desired monthly repayments.")
 
 # Option calculator dependent
 if calculator_type == "Monthly mortgage calculator":
@@ -34,7 +38,7 @@ if calculator_type == "Monthly mortgage calculator":
 
 elif calculator_type == "Affordability calculator":
     # Monthly Payment
-    monthly_payment = col1.number_input('Enter monthly payment (£)', step=250, min_value=0, value=0, format="%d")
+    monthly_payment = col1.number_input('Enter desired monthly repayment (£)', step=250, min_value=0, value=0, format="%d")
 
 # Deposit
 # Radio button to choose between % and £
@@ -72,7 +76,7 @@ calculate_clicked = col4.button("Calculate", use_container_width=True)
 
 if calculate_clicked:
     # Load the dataframe
-    date, i_v_df = calc_i_v(i_spread)
+    i_v_df = calc_i_v(i_spread)
 
     # Monthly Mortgage Calculation
     if calculator_type == 'Monthly mortgage calculator':
@@ -115,10 +119,13 @@ if calculate_clicked:
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment_solution * (mortgage_term*12)
 
+            # Format numbers to include commas
+            monthly_payment_solution, average_i, total_repayments = format(round(monthly_payment_solution), ',d'), round(average_i,2), format(round(total_repayments), ',d')
+
             # Display the success box with calculated results
             col3.success(
-                "Monthly payment: £{0}\n\nAverage interest: {1}%\n\nTotal rerepayments: £{2}".format(
-                    round(monthly_payment_solution), round(average_i,2), round(total_repayments)
+                "Monthly payment: £{0}\n\nAverage interest: {1}% p.a.\n\nTotal rerepayments: £{2}".format(
+                    monthly_payment_solution, average_i, total_repayments
                 )
             )
 
@@ -142,10 +149,14 @@ if calculate_clicked:
             average_i = (total_sum/max_borrow)*100
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment * (mortgage_term*12)
+
+            # Format numbers to include commas
+            house_price, average_i, total_repayments = format(round(house_price), ',d'), round(average_i,2), format(round(total_repayments), ',d')
+
             # Display the success box with calculated results
             col3.success(
-                "Maximum house price: £{0}\n\nAverage interest: {1}%\n\nTotal repayments: £{2}".format(
-                    round(house_price), round(average_i, 2), round(total_repayments)
+                "Maximum house price: £{0}\n\nAverage interest: {1}% p.a.\n\nTotal repayments: £{2}".format(
+                    house_price, average_i, total_repayments
                 )
             )
 

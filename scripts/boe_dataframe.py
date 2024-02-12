@@ -78,5 +78,6 @@ def create_spot_curve():
 
     # Concatenate all the new columns to the combined_df
     combined_df = pd.concat([combined_df] + new_columns, axis=1)
+    date = combined_df['date'].iloc[-1]
 
-    return combined_df
+    return date, combined_df

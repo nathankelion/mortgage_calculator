@@ -4,13 +4,10 @@ from scripts.boe_dataframe import create_spot_curve
 def calc_i_v(i_spread):
     
     # Get the dataframe
-    spot_curve = create_spot_curve()
+    spot_curve = create_spot_curve()[1]
 
     # Get the last row of the dataframe
     latest_date = spot_curve.iloc[-1]
-
-    # Extract the date from the last row
-    date = latest_date['date']
 
     # Initialise lists to store data
     months = []
@@ -33,4 +30,4 @@ def calc_i_v(i_spread):
     # Create i_v dataframe
     i_v_df = pd.DataFrame({'month': months, 'i': i_values, 'v': v_values})
 
-    return date, i_v_df
+    return i_v_df
