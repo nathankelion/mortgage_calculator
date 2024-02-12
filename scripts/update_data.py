@@ -18,8 +18,10 @@ chrome_options = webdriver.ChromeOptions()
 if 'GITHUB_ACTIONS' in os.environ:
     # Running in GitHub Actions
     print("Running in GitHub Actions. Using default download folder.")
-    # Specify the path to ChromeDriver
-    chrome_driver_path = '/usr/local/bin'
+    # # Specify the path to ChromeDriver
+    # chrome_driver_path = '/usr/local/bin'
+    # Add headless mode
+    chrome_options.add_argument('--headless')
     # Initialize ChromeDriver with the specified path
     driver = webdriver.Chrome(options=chrome_options)
 else:
