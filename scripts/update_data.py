@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import time, zipfile, os
 
@@ -13,7 +12,7 @@ zip_file_path = 'latest-yield-curve-data.zip'
 destination_folder = 'data'
 
 # Initialize Chrome options
-chrome_options = Options()
+chrome_options = webdriver.ChromeOptions()
 
 # Check if running in GitHub Actions
 if 'GITHUB_ACTIONS' in os.environ:
