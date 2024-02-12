@@ -22,9 +22,12 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install Chrome
-        uses: logikal-io/install-chrome@v1  
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
         with:
-          version: 'latest'  # Specify the desired Chrome version
+          chrome-version: 'latest'  # Specify the desired Chrome version
+      - run: |
+          ${{ steps.setup-chrome.outputs.chrome-path }} --version
 
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
@@ -33,6 +36,8 @@ jobs:
 
       - name: Run Python script
         run: python scripts/update_data.py
+        env:
+          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
         
       - name: Set Git user email and name
         run: |
