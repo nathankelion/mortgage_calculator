@@ -26,18 +26,19 @@ jobs:
         id: setup-chrome
         with:
           chrome-version: 'latest'  # Specify the desired Chrome version
-      - run: |
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
 
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
         with:
           chromedriver-version: '121.0.6167.139'  # Specify the correct version
+        
+      - name: Tree
+        run: |
+          cd /usr/local/share/chrome_driver/chromedriver
+          tree
 
       - name: Run Python script
         run: python scripts/update_data.py
-        env:
-          CHROME_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
         
       - name: Set Git user email and name
         run: |

@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 import time, zipfile, os
 
 # Zip file link
@@ -18,10 +19,11 @@ chrome_options = Options()
 if 'GITHUB_ACTIONS' in os.environ:
     # Running in GitHub Actions
     print("Running in GitHub Actions. Using default download folder.")
-    # Set Chrome executable path obtained from the workflow
-    chrome_executable_path = os.getenv('CHROME_PATH')
+    chrome_service = Service(os.environ['CHROMEWEBDRIVER'])
+    for option in ['--headless','--disable-gpu','--window-size=1920,1200','--ignore-certificate-errors','--disable-extensions','--no-sandbox','--disable-dev-shm-usage']:
+        chrome_options.add_argument(option)
     # Initialize ChromeDriver with the specified path
-    driver = webdriver.Chrome(path=chrome_executable_path)
+    driver = webdriver.Chrome(service = chrome_service,options = chrome_options)
 else:
     # Running locally
     download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
