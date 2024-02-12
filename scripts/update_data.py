@@ -21,7 +21,7 @@ if 'GITHUB_ACTIONS' in os.environ:
     # Specify the path to ChromeDriver
     chrome_driver_path = '/usr/local/bin'
     # Initialize ChromeDriver with the specified path
-    driver = webdriver.Chrome(chrome_driver_path)
+    driver = webdriver.Chrome(chrome_driver_path, options=chrome_options)
 else:
     # Running locally
     download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
@@ -32,7 +32,7 @@ else:
         'safebrowsing.enabled': True
     })
     # Initialize ChromeDriver
-    driver = webdriver.Chrome(options=chrome_options, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
 
 # Navigate to the zip file link
 driver.get(zip_url)
