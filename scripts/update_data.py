@@ -18,6 +18,8 @@ chrome_options = Options()
 if 'GITHUB_ACTIONS' in os.environ:
     # Running in GitHub Actions
     print("Running in GitHub Actions. Using default download folder.")
+    # Initialize ChromeDriver
+    driver = webdriver.Chrome()
 else:
     # Running locally
     download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
@@ -27,9 +29,8 @@ else:
         'download.directory_upgrade': True,
         'safebrowsing.enabled': True
     })
-
-# Initialize ChromeDriver
-driver = webdriver.Chrome(options=chrome_options)
+    # Initialize ChromeDriver
+    driver = webdriver.Chrome(options=chrome_options)
 
 # Navigate to the zip file link
 driver.get(zip_url)
