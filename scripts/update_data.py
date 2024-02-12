@@ -1,45 +1,50 @@
-import requests
-import zipfile
-import os
-import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time, zipfile, os
 
-# URL of the Bank of England zip file
-zip_file_url = "https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip"
+# Zip file link
+zip_url = 'https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip'
 
-# Path to your data folder
-data_folder = "data"
+# Downloaded zip file path
+zip_file_path = 'latest-yield-curve-data.zip'
 
-def download_and_extract(retry_count=1):
-    try:
-        # Download the zip file
-        r = requests.get(zip_file_url, stream=True)
-        if r.status_code == 200:
-            with open("latest_data.zip", "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
+# Destination folder for extracted file
+destination_folder = 'data'
 
-            # Extract the desired Excel file
-            excel_file_name = "GLC Nominal daily data current month.xlsx"
-            with zipfile.ZipFile("latest_data.zip", "r") as zip_ref:
-                zip_ref.extract(excel_file_name, data_folder)
-            print("Data downloaded and extracted successfully.")
-        else:
-            if retry_count < 3:
-                print(f"Request failed with status code {r.status_code}. Retrying in 5 minutes...")
-                time.sleep(300)  # Wait for 5 minutes before retrying
-                download_and_extract(retry_count + 1)
-            else:
-                print("Maximum retry attempts reached. Exiting.")
+# Initialize Chrome options
+chrome_options = Options()
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+# Check if running in GitHub Actions
+if 'GITHUB_ACTIONS' in os.environ:
+    # Running in GitHub Actions
+    print("Running in GitHub Actions. Using default download folder.")
+else:
+    # Running locally
+    download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
+    chrome_options.add_experimental_option('prefs', {
+        'download.default_directory': download_folder,
+        'download.prompt_for_download': False,
+        'download.directory_upgrade': True,
+        'safebrowsing.enabled': True
+    })
 
-    finally:
-        # Clean up: remove the downloaded zip file
-        try:
-            os.remove("latest_data.zip")
-        except OSError:
-            pass  # Ignore the error if the file doesn't exist
+# Initialize ChromeDriver
+driver = webdriver.Chrome(options=chrome_options)
 
-# Call the function to start the process
-download_and_extract()
+# Navigate to the zip file link
+driver.get(zip_url)
+
+# Give the zipped folder time to download
+time.sleep(5)
+
+# Close the browser
+driver.quit()
+
+# Extract the specific Excel file
+with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+    for file in zip_ref.namelist():
+        if file == 'GLC Nominal daily data current month.xlsx':
+            zip_ref.extract(file, destination_folder)
+
+# Clean up: remove the downloaded zip file
+os.remove(zip_file_path)
