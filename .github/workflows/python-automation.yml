@@ -21,6 +21,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1  # Use the appropriate setup action
+        with:
+          chrome-version: 'latest'  # Specify the desired Chrome version
+
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
         with:
