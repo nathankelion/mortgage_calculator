@@ -5,7 +5,7 @@ from scipy.optimize import root_scalar
 from scripts.boe_dataframe import create_spot_curve
 from scripts.i_v_calc import calc_i_v
 
-# Set page configuration to wide mode
+# Set page configuration
 st.set_page_config(page_title='JNK Mortgage Calculator', page_icon=':house:', layout="wide")
 
 
@@ -61,6 +61,9 @@ if calculator_type == 'Monthly mortgage calculator':
 elif calculator_type == 'Affordability calculator':
     # Add deposit box
     deposit = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d", help='Typically 10% of the house price')
+
+# Checkbox for first time buyer
+first_time_buyer = col1.checkbox("Tick if you're a first time buyer", help="This may affect stamp duty")
 
 # Mortgage term
 mortgage_term = col1.slider("Mortgage term (years)", min_value=5, max_value=30, value=20, step=1)
@@ -127,8 +130,29 @@ if calculate_clicked:
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment_solution * (mortgage_term*12)
 
+
+            # Calculate stamp duty
+            stamp_duty = 0
+            if house_price > 1500000:
+                stamp_duty += ((house_price - 1500000) * 0.12)
+                stamp_duty += (575000 * 0.1)
+                stamp_duty += (675000 * 0.05)
+            
+            elif house_price > 925000:
+                stamp_duty += ((house_price - 925000) * 0.1)
+                stamp_duty += (675000 * 0.05)
+
+            elif (house_price > 250000 and first_time_buyer == False) or house_price > 625000:
+                stamp_duty += ((house_price - 250000) * 0.05)
+            
+            elif house_price <= 625000 and house_price > 250000 and first_time_buyer == True:
+                stamp_duty += ((house_price - 425000) * 0.05)
+
+            else:
+                stamp_duty = 0
+
             # Format numbers to include commas
-            monthly_payment_solution, average_i, total_repayments = format(round(monthly_payment_solution), ',d'), round(average_i,2), format(round(total_repayments), ',d')
+            monthly_payment_solution, average_i, total_repayments, stamp_duty = format(round(monthly_payment_solution), ',d'), round(average_i,2), format(round(total_repayments), ',d'), format(round(stamp_duty), ',d')
             
             # Print user inputs
             if deposit_type == '£':
@@ -139,8 +163,8 @@ if calculate_clicked:
 
             # Display the success box with calculated results
             col3.success(
-                "Monthly payment: £{0}\n\nAverage interest: {1}% pa\n\nTotal rerepayments: £{2}".format(
-                    monthly_payment_solution, average_i, total_repayments
+                "Monthly payment: £{0}\n\nAverage interest: {1}% pa\n\nTotal rerepayments: £{2}\n\nStamp Duty: {3}".format(
+                    monthly_payment_solution, average_i, total_repayments, stamp_duty
                 )
             )
 
@@ -165,16 +189,36 @@ if calculate_clicked:
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment * (mortgage_term*12)
 
+            # Calculate stamp duty
+            stamp_duty = 0
+            if house_price > 1500000:
+                stamp_duty += ((house_price - 1500000) * 0.12)
+                stamp_duty += (575000 * 0.1)
+                stamp_duty += (675000 * 0.05)
+            
+            elif house_price > 925000:
+                stamp_duty += ((house_price - 925000) * 0.1)
+                stamp_duty += (675000 * 0.05)
+
+            elif (house_price > 250000 and first_time_buyer == False) or house_price > 625000:
+                stamp_duty += ((house_price - 250000) * 0.05)
+
+            elif house_price <= 625000 and house_price > 250000 and first_time_buyer == True:
+                stamp_duty += ((house_price - 425000) * 0.05)
+
+            else:
+                stamp_duty = 0
+
             # Format numbers to include commas
-            house_price, average_i, total_repayments = format(round(house_price), ',d'), round(average_i,2), format(round(total_repayments), ',d')
+            house_price, average_i, total_repayments, stamp_duty = format(round(house_price), ',d'), round(average_i,2), format(round(total_repayments), ',d'), format(round(stamp_duty), ',d')
 
             # Print their inputs
             col3.write(f"<span style='font-size: small; font-style: italic;'>Based on a monthly repayment of £{format(monthly_payment, ',d')}, initial deposit of £{format(deposit, ',d')}, and an interest rate spread of {round(i_spread,2)}% pa</span>", unsafe_allow_html=True)
 
             # Display the success box with calculated results
             col3.success(
-                "Maximum house price: £{0}\n\nAverage interest: {1}% pa\n\nTotal repayments: £{2}".format(
-                    house_price, average_i, total_repayments
+                "Maximum house price: £{0}\n\nAverage interest: {1}% pa\n\nTotal repayments: £{2}\n\nStamp Duty: {3}".format(
+                    house_price, average_i, total_repayments, stamp_duty
                 )
             )
 
