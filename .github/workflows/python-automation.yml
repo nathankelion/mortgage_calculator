@@ -1,7 +1,6 @@
 name: Update Data
 
 on:
-  push:
   schedule:
     - cron: '0 9,12,17 * * 1-5'  # Run at 9:00 AM, 12:00 PM, and 5:00 PM (Mon-Fri)
 
