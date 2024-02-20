@@ -53,15 +53,15 @@ if calculator_type == 'Monthly mortgage calculator':
 
     if deposit_type == "£":
         # Add deposit box
-        deposit_money = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d", help='Typically 10% of the house price')
+        deposit_money = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d", help='Typically 10% of the house price. Consider stampt duty when determining deposit.')
 
     elif deposit_type == "%":
         # Add deposit box
-        deposit_percentage = col1.number_input("Enter deposit (%)", min_value=0.00, max_value=100.00, value=0.00, step=5.00, help='Typically 10% of the house price')
+        deposit_percentage = col1.number_input("Enter deposit (%)", min_value=0.00, max_value=100.00, value=0.00, step=5.00, help='Typically 10% of the house price. Consider stamp duty when determining deposit.')
 
 elif calculator_type == 'Affordability calculator':
     # Add deposit box
-    deposit = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d", help='Typically 10% of the house price')
+    deposit = col1.number_input("Enter deposit (£)", min_value=0, value=0, step=5000,format="%d", help='Typically 10% of the house price. Consider stamp duty when determing deposit.')
 
 # Checkbox for first time buyer
 first_time_buyer = col1.checkbox("Tick if you're a first time buyer", help="This may affect stamp duty")
