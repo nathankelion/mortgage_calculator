@@ -4,6 +4,7 @@ from scipy.optimize import root_scalar
 
 from scripts.boe_dataframe import create_spot_curve
 from scripts.i_v_calc import calc_i_v
+from scripts.output_calculations import calculate_stamp_duty, calculate_average_i
 
 # Set page configuration
 st.set_page_config(page_title='JNK Mortgage Calculator', page_icon=':house:', layout="wide")
@@ -85,9 +86,14 @@ buff, col4, buff = col1.columns([1,2,1])
 # Calculate button
 calculate_clicked = col4.button("Calculate", use_container_width=True)
 
+@st.cache_data
+def get_i_v_df(i_spread):
+    i_v_df = calc_i_v(i_spread)
+    return i_v_df
+
 if calculate_clicked:
     # Load the dataframe
-    i_v_df = calc_i_v(i_spread)
+    i_v_df = get_i_v_df(i_spread)
 
     # Monthly Mortgage Calculation
     if calculator_type == 'Monthly mortgage calculator':
@@ -122,34 +128,14 @@ if calculate_clicked:
             borrowed = house_price - deposit
             pv_list = [(v * monthly_payment_solution) for v in i_v_df['v']]
             
-            total_sum = 0
-            for value, row in i_v_df.iterrows():
-                if row['month'] <= mortgage_term*12:
-                    total_sum += (row['i'] * pv_list[value])
-            average_i = (total_sum/borrowed)*100
+            average_i = calculate_average_i(i_v_df, pv_list, mortgage_term, borrowed)
+
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment_solution * (mortgage_term*12)
 
 
             # Calculate stamp duty
-            stamp_duty = 0
-            if house_price > 1500000:
-                stamp_duty += ((house_price - 1500000) * 0.12)
-                stamp_duty += (575000 * 0.1)
-                stamp_duty += (675000 * 0.05)
-            
-            elif house_price > 925000:
-                stamp_duty += ((house_price - 925000) * 0.1)
-                stamp_duty += (675000 * 0.05)
-
-            elif (house_price > 250000 and first_time_buyer == False) or house_price > 625000:
-                stamp_duty += ((house_price - 250000) * 0.05)
-            
-            elif house_price <= 625000 and house_price > 250000 and first_time_buyer == True:
-                stamp_duty += ((house_price - 425000) * 0.05)
-
-            else:
-                stamp_duty = 0
+            stamp_duty = calculate_stamp_duty(house_price, first_time_buyer)
 
             # Format numbers to include commas
             monthly_payment_solution, average_i, total_repayments, stamp_duty = format(round(monthly_payment_solution), ',d'), round(average_i,2), format(round(total_repayments), ',d'), format(round(stamp_duty), ',d')
@@ -177,37 +163,19 @@ if calculate_clicked:
         else:
             # Calculate adjusted payments
             pv_list = [(v * monthly_payment) for v in i_v_df['v']]
+            
             # Calculate the maximum house price including the deposit
             max_borrow = sum(pv_list[:(mortgage_term*12)])
             house_price = max_borrow + deposit
+
             # Calculate average interest
-            total_sum = 0
-            for value, row in i_v_df.iterrows():
-                if row['month'] <= mortgage_term*12:
-                    total_sum += (row['i'] * pv_list[value])
-            average_i = (total_sum/max_borrow)*100
+            average_i = calculate_average_i(i_v_df, pv_list, mortgage_term, max_borrow)
+
             # Calculate the total payments over the mortgage term
             total_repayments = monthly_payment * (mortgage_term*12)
 
             # Calculate stamp duty
-            stamp_duty = 0
-            if house_price > 1500000:
-                stamp_duty += ((house_price - 1500000) * 0.12)
-                stamp_duty += (575000 * 0.1)
-                stamp_duty += (675000 * 0.05)
-            
-            elif house_price > 925000:
-                stamp_duty += ((house_price - 925000) * 0.1)
-                stamp_duty += (675000 * 0.05)
-
-            elif (house_price > 250000 and first_time_buyer == False) or house_price > 625000:
-                stamp_duty += ((house_price - 250000) * 0.05)
-
-            elif house_price <= 625000 and house_price > 250000 and first_time_buyer == True:
-                stamp_duty += ((house_price - 425000) * 0.05)
-
-            else:
-                stamp_duty = 0
+            stamp_duty = calculate_stamp_duty(house_price, first_time_buyer)
 
             # Format numbers to include commas
             house_price, average_i, total_repayments, stamp_duty = format(round(house_price), ',d'), round(average_i,2), format(round(total_repayments), ',d'), format(round(stamp_duty), ',d')
