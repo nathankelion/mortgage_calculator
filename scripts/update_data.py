@@ -78,10 +78,11 @@ if not os.path.exists(download_folder):
 chrome_options = Options()
 
 # Set the download directory for Chrome in headless mode
-chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")  # Make sure headless mode is enabled
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument(f'--download-default-directory={download_folder}')
+chrome_options.add_argument(f'--download-default-directory={download_folder}')  # Set download folder
+chrome_options.add_argument("--disable-software-rasterizer")  # Disable software rasterizer to improve performance
 
 # Initialize ChromeDriver with the specified options
 driver = webdriver.Chrome(options=chrome_options)
