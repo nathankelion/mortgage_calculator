@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up ChromeDriver
         run:
-          python -m webdriver_manager.chrom
+          python -m webdriver_manager.chrome
 
       - name: Run Python script
         run: python scripts/update_data.py
