@@ -54,7 +54,6 @@
 
 import os
 import zipfile
-import shutil
 import requests
 
 # URL to the ZIP file
@@ -63,19 +62,14 @@ zip_url = 'https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-cu
 # Downloaded zip file path
 zip_file_path = 'latest-yield-curve-data.zip'
 
-# Destination folder for extracted file
-destination_folder = 'data'
+# Headers to mimic a request from a web browser (e.g., Chrome)
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
 
-# Temporary download folder (ensure it exists)
-download_folder = '/tmp/chrome_downloads'
-
-# Ensure the download folder exists
-if not os.path.exists(download_folder):
-    os.makedirs(download_folder)
-
-# Step 1: Download the ZIP file using requests
+# Step 1: Download the ZIP file using requests with headers
 print("Downloading the ZIP file...")
-response = requests.get(zip_url, stream=True)
+response = requests.get(zip_url, headers=headers, stream=True)
 
 # Check if the request was successful
 if response.status_code == 200:
@@ -94,8 +88,8 @@ if os.path.exists(zip_file_path):
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         for file in zip_ref.namelist():
             if file == 'GLC Nominal daily data current month.xlsx':
-                zip_ref.extract(file, destination_folder)
-                print(f"Extracted {file} to {destination_folder}")
+                zip_ref.extract(file, 'data')
+                print(f"Extracted {file} to data")
 else:
     print(f"{zip_file_path} not found after download.")
 
