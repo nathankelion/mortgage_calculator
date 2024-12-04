@@ -67,8 +67,12 @@ zip_file_path = 'latest-yield-curve-data.zip'
 # Destination folder for extracted file
 destination_folder = 'data'
 
-# Temporary download folder
+# Temporary download folder (ensure it exists)
 download_folder = '/tmp/chrome_downloads'
+
+# Ensure the download folder exists
+if not os.path.exists(download_folder):
+    os.makedirs(download_folder)
 
 # Initialize Chrome options
 chrome_options = Options()
