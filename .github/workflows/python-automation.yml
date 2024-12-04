@@ -21,12 +21,13 @@ jobs:
           python-version: 3.11.2  # Adjust as needed
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: | 
+          pip install -r requirements.txt
+          pip install webdriver-manager
 
       - name: Set up ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
-        with:
-          chromedriver-version: '121.0.6167.139'  # Specify the correct version
+        run:
+          python -m webdriver_manager.chrom
 
       - name: Run Python script
         run: python scripts/update_data.py
