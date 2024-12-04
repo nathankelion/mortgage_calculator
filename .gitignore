@@ -3,4 +3,4 @@ __pycache__/
 *.pyc
 
 # Ignore the virtual environmnet folder
-mortgage_calculator_venv/
+venv/

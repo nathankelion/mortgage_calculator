@@ -16,6 +16,10 @@ def calculate_stamp_duty(house_price, first_time_buyer):
     elif house_price <= 625000 and house_price > 250000 and first_time_buyer == True:
         stamp_duty += ((house_price - 425000) * 0.05)
     
+    # Ensure stamp duty is not negative
+    if stamp_duty < 0:
+        stamp_duty = 0
+
     return stamp_duty
 
 # Calculates average interest

@@ -14,7 +14,7 @@ st.set_page_config(page_title='JNK Mortgage Calculator', page_icon=':house:', la
 col1, col2 = st.columns([12,1])
 
 # Add an image of a house
-col2.image('data\house.webp')
+col2.image('data/house.webp')
 
 # Display title
 col1.title('Mortgage Calculator')
@@ -191,34 +191,39 @@ if calculate_clicked:
             )
 
 
-    # Read the image file and encode it
-    with open("data/mortgage_info_website.png", "rb") as img_file:
+    # File path to the image
+image_path = "data/mortgage_info_website.png"
+
+# Website URL to link to
+website_url = "https://www.moneysavingexpert.com/mortgages/best-mortgages-cashback/"
+
+try:
+    # Encode the image as base64
+    with open(image_path, "rb") as img_file:
         img_data = base64.b64encode(img_file.read()).decode()
 
-    # Define the website URL
-    website_url = "https://www.moneysavingexpert.com/mortgages/best-mortgages-cashback/"
-
-    # Define HTML and CSS for the tooltip
+    # Define HTML and CSS for the tooltip and clickable image
     html_content_house = f"""
     <style>
     .tooltip-container {{
-        width: 100%;
-    }}
-
-    .tooltip {{
         position: relative;
         display: inline-block;
         cursor: pointer;
-        width: 100%;
     }}
 
-    .tooltip img {{
-        width: 100%;
+    .tooltip-container img {{
+        width: 300px; /* Adjust the size of the image as needed */
+        border-radius: 10px; /* Optional: Rounded corners */
+        transition: transform 0.2s; /* Smooth hover effect */
     }}
 
-    .tooltip .tooltiptext {{
+    .tooltip-container img:hover {{
+        transform: scale(1.05); /* Slight zoom on hover */
+    }}
+
+    .tooltip {{
         visibility: hidden;
-        width: 200px;
+        width: 220px;
         background-color: black;
         color: white;
         text-align: center;
@@ -226,110 +231,104 @@ if calculate_clicked:
         padding: 5px 0;
         position: absolute;
         z-index: 1;
-        top: 100%;
+        top: 100%; /* Position below the image */
         left: 50%;
-        margin-left: -100px;
+        transform: translateX(-50%);
         opacity: 0;
         transition: opacity 0.3s;
     }}
 
-    .tooltip:hover .tooltiptext {{
+    .tooltip-container:hover .tooltip {{
         visibility: visible;
         opacity: 1;
     }}
     </style>
 
     <div class="tooltip-container">
-        <div class="tooltip">
-            <a href="{website_url}" target="_blank">
-                <img src="data:image/png;base64,{img_data}" alt="Mortgage Info">
-            </a>
-            <span class="tooltiptext">Click on the image to get started!</span>
-        </div>
+        <a href="{website_url}" target="_blank">
+            <img src="data:image/png;base64,{img_data}" alt="Mortgage Info">
+        </a>
+        <div class="tooltip">Click to visit the website</div>
     </div>
     """
 
     # Display HTML in Streamlit
     col3.markdown(html_content_house, unsafe_allow_html=True)
 
+except FileNotFoundError:
+    st.error(f"File not found: {image_path}. Please check the file path and try again.")
+
 # Read the GitHub logo image file and encode it
 with open("data/GitHub_Invertocat_Logo.svg", "rb") as github_img_file:
     github_img_data = base64.b64encode(github_img_file.read()).decode()
 
-# Read the LinkedIn logo image file and encode it
-with open("data/linkedin.png", "rb") as linkedin_img_file:
-    linkedin_img_data = base64.b64encode(linkedin_img_file.read()).decode()
-
 # Define the URLs
 github_url = "https://github.com/nathankelion/mortgage_calculator"
-linkedin_nathan_url = "https://www.linkedin.com/in/nathankelion/"
-linkedin_joel_url = "https://www.linkedin.com/in/joel-kelion-285270198/"
 
 
-# # Define HTML and CSS for the logos container
-# html_content_logos = f"""
-# <style>
-# .logos-container {{
-#     position: fixed;
-#     bottom: 10px;
-#     right: 10px;
-#     display: flex;
-#     flex-direction: row-reverse;
-#     justify-content: flex-end;
-#     align-items: center;
-#     gap: 5px;
-# }}
-# .logo {{
-#     cursor: pointer;
-#     width: auto;
-#     height: 30px;
-#     position relative;
-# }}
-# .logo img {{
-#     width: 30px;
-#     height: auto;
-# }}
-# .tooltip {{
-#     visibility: hidden;
-#     width: fit-content;
-#     background-color: black;
-#     color: white;
-#     text-align: center;
-#     border-radius: 6px;
-#     padding: 4px;
-#     position: absolute;
-#     z-index: 1;
-#     bottom: 100%;
-#     left: 50%;
-#     transform: translateX(-50%);
-#     font-size: smaller; /* Reduced the font size */
-# }}
-# .logo:hover .tooltip {{
-#     visibility: visible;
-# }}
-# </style>
 
-# <div class="logos-container">
-#     <div class="logo">
-#         <a href="{linkedin_nathan_url}" target="_blank">
-#             <img src="data:image/png;base64,{linkedin_img_data}" alt="LinkedIn Logo">
-#         </a>
-#         <span class="tooltip">Nathan Kelion</span>
-#     </div>
-#     <div class="logo">
-#         <a href="{linkedin_joel_url}" target="_blank">
-#             <img src="data:image/png;base64,{linkedin_img_data}" alt="LinkedIn Logo">
-#         </a>
-#         <span class="tooltip">Joel Kelion</span>
-#     </div>
-#     <a href="{github_url}" target="_blank">
-#         <img class="logo" src="data:image/svg+xml;base64,{github_img_data}" alt="GitHub Logo">
-#     </a>
-# </div>
-# """
+# Define HTML and CSS for the logos container
+html_content_logos = f"""
+<style>
+.logos-container {{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    z-index: 1000; /* Ensure it appears above other content */
+}}
+.logo {{
+    cursor: pointer;
+    width: auto;
+    height: 30px;
+}}
+.logo img {{
+    width: 30px;
+    height: auto;
+}}
+.tooltip {{
+    visibility: hidden;
+    width: fit-content;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px;
+    position: absolute;
+    z-index: 1001;
+    bottom: 40px; /* Adjust to be above the logo */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: smaller;
+}}
+.logo:hover .tooltip {{
+    visibility: visible;
+}}
+</style>
 
-# # Display HTML in Streamlit
-# st.markdown(html_content_logos, unsafe_allow_html=True)
+<div class="logos-container">
+    <div class="logo">
+        <a href="{github_url}" target="_blank">
+            <img src="data:image/svg+xml;base64,{github_img_data}" alt="GitHub Logo">
+        </a>
+        <span class="tooltip">Visit GitHub Repo</span>
+    </div>
+</div>
+"""
+
+# Display HTML in Streamlit
+st.markdown(html_content_logos, unsafe_allow_html=True)
+
+# Add a line with your information, fixed at the bottom center
+st.markdown(
+    """<div style='position: fixed; bottom: 10px; width: 100%; text-align: center;'><i>A JNK Product 2024</i></div>""",
+    unsafe_allow_html=True
+)
+
 
 # Add a line with your information, using CSS to position it at the bottom
 st.markdown(

@@ -5,7 +5,7 @@ def create_spot_curve():
     pd.set_option('future.no_silent_downcasting', True)
 
     # Load the Excel file
-    excel_file_path = 'data\GLC Nominal daily data current month.xlsx'
+    excel_file_path = 'data/GLC Nominal daily data current month.xlsx'
 
     # Read the first sheet into a dataframe
     df_spot_short_end = pd.read_excel(excel_file_path, sheet_name='3. spot, short end')

@@ -23,7 +23,7 @@ if 'GITHUB_ACTIONS' in os.environ:
     driver = webdriver.Chrome(options=chrome_options)
 else:
     # Running locally
-    download_folder = r'C:\Users\natha\OneDrive\Documents\data_science_projects\mortgage_calculator'
+    download_folder = r'C:/Users/natha/OneDrive/Documents/data_science_projects/mortgage_calculator'
     chrome_options.add_experimental_option('prefs', {
         'download.default_directory': download_folder,
         'download.prompt_for_download': False,
